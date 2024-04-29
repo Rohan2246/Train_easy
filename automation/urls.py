@@ -9,6 +9,7 @@ urlpatterns = [
     path('metric/selection', views.metric_selection, name='metric_selection'),
     path('training', views.training, name='training'),
     path('finalize', views.finalize_pipeline, name='finalize'),
+    path('execute', views.execute_pipeline, name='execute'),
 ]
 
 api_urlpatterns = [

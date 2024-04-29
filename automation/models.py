@@ -19,7 +19,7 @@ class Preprocessing(models.Model):
     encoding = models.BooleanField(default=False)
     imputation = models.BooleanField(default=False)
     feature_selection = models.BooleanField(default=False)
-    pca = models.BooleanField(default=False)
+    pca = models.BooleanField(default=False, help_text="3 components for PCA")
 
     def __str__(self):
         return f'{self.dataset.name} - {self.created_at}'
@@ -28,12 +28,12 @@ class Preprocessing(models.Model):
 class AlgorithmSelection(models.Model):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    linear_Regression = models.BooleanField(default=False)
-    logistic_Regression = models.BooleanField(default=False)
-    decision_Tree = models.BooleanField(default=False)
-    random_Forest = models.BooleanField(default=False)
-    support_Vector_Machines = models.BooleanField(default=False)        
-    naive_Bayes = models.BooleanField(default=False)        
+    linear = models.BooleanField(default=False, help_text="Linear models")
+    decision_Tree = models.BooleanField(default=False, help_text="Tree based models")
+    random_Forest = models.BooleanField(default=False, help_text="Ensemble models")
+    support_Vector_Machines = models.BooleanField(default=False, help_text="SVM models")        
+    naive_Bayes = models.BooleanField(default=False, help_text="Naive Bayes models")
+    knn = models.BooleanField(default=False, help_text="K-Nearest Neighbors models")        
 
     def __str__(self):
         return f'{self.dataset.name}'
@@ -53,7 +53,7 @@ class MetricSelection(models.Model):
     f1 = models.BooleanField(default=False, help_text="for classification")
     
     def __str__(self):
-        return f'{self.dataset.name} - {self.created_at}'
+        return f'{self.dataset.name}'
     
     
 class Training(models.Model):

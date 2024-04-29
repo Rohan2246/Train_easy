@@ -17,7 +17,7 @@ class PreprocessingForm(forms.ModelForm):
 class AlgorithmSelectionForm(forms.ModelForm):
     class Meta:
         model = AlgorithmSelection
-        fields = ['dataset','linear_Regression', 'logistic_Regression', 'decision_Tree', 'random_Forest', 'support_Vector_Machines', 'naive_Bayes']
+        fields = ['dataset','linear', 'decision_Tree', 'random_Forest', 'support_Vector_Machines', 'naive_Bayes', 'knn']
         
 class MetricSelectionForm(forms.ModelForm): 
     class Meta:
