@@ -5,6 +5,9 @@ class DatasetUploadForm(forms.ModelForm):
     class Meta:
         model = Dataset
         fields = ['name', 'file']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Enter Project Name'}),
+        }
         
 class PreprocessingForm(forms.ModelForm):
     class Meta:
@@ -24,5 +27,5 @@ class MetricSelectionForm(forms.ModelForm):
 class TrainingForm(forms.ModelForm):
     class Meta:
         model = Training
-        fields = ['dataset', 'training_time' , 'training_accuracy', 'testing_accuracy','split' , 'random_state', 'model_path']  
+        fields = ['dataset' ,'split' ]  
         

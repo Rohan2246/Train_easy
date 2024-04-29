@@ -13,7 +13,20 @@
 <section class="my-5">
     {% include 'components/steps.html' %}
     <div class="container my-5">
-        <h1>Finalize</h1>
-                        <form method="POST"  enctype="multipart/form-data" >
-                            {% csrf_token %}
-                            {{form|crispy}}
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <h1>Finalize</h1>
+                        {{dataset}}
+                        {{preprocesses}}
+                        {{algorithms}}
+                        {{metrics}}
+                        {{training}}
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

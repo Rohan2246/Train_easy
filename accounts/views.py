@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import ProfileForm
+from .forms import ProfileForm , DashboardForm
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
@@ -69,3 +69,18 @@ def create_profile(request):
     else:
         form = ProfileForm()
     return render(request, 'accounts/create_profile.html', {'form': form})
+
+@login_required
+def dashboard(request):
+    if request.method == 'POST':
+        form = DashboardForm(request.POST)
+        if form.is_valid():
+            dashboard = form.save(commit=False)
+            dashboard.user = request.user
+            dashboard.save()
+            return redirect('home')
+    else:
+        form = DashboardForm()
+    return render(request, 'accounts/dashboard.html')
+
+

@@ -16,7 +16,7 @@ def upload_dataset(request):
             dataset.user = request.user
             dataset.save()
             messages.success(request, 'Dataset uploaded successfully')
-            return redirect('upload_success')
+            return redirect('preprocess_selection')
     else:
         form = DatasetUploadForm()
     return render(request, 'upload_dataset.html', {'form': form})
@@ -35,7 +35,7 @@ def upload_dataset_api(request):
             dataset.user = request.user
             dataset.save()
             messages.success(request, 'Dataset uploaded successfully')
-            return redirect('upload_success')
+            return redirect('preprocess_selection')
     else:
         form = DatasetUploadForm()
     return render(request, 'components/upload_dataset.html', {'form': form})
@@ -69,7 +69,7 @@ def algorithm_selection(request):
             algorithm.user = request.user
             algorithm.save()
             messages.success(request, 'Algorithm selected successfully')
-            return redirect('algorithm_selection')
+            return redirect('metric_selection')
     ctx = {'form': form}
     return render(request, 'algorithm_selection.html', ctx)
     
@@ -96,7 +96,7 @@ def training(request):
             training.user = request.user
             training.save()
             messages.success(request, 'Training started successfully')
-            return redirect('training')
+            return redirect('finalize')
     ctx = {'form': form}
     return render(request, 'training.html', ctx)
     
@@ -116,4 +116,5 @@ def finalize_pipeline(request):
         'metrics': metrics,
         'training': training
     }
-    return render(request, 'finalize_pipeline.html', ctx)
+    return render(request, 'finalize.html', ctx)
+

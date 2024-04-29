@@ -8,6 +8,7 @@ urlpatterns = [
     path('algorithm/selection', views.algorithm_selection, name='algorithm_selection'),
     path('metric/selection', views.metric_selection, name='metric_selection'),
     path('training', views.training, name='training'),
+    path('finalize', views.finalize_pipeline, name='finalize'),
 ]
 
 api_urlpatterns = [
