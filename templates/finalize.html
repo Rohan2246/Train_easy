@@ -39,7 +39,9 @@
                                                                 <p class="card-text m-0">
                                                                     <i class="bi bi-check-circle-fill text-success"></i>
                                                                     {{dataset.name}} [{{dataset.file}}]
-                                                                    {{dataset.uploaded_at}}
+                                                                <div class="table-responsive">
+                                                                    {{table|safe}}
+                                                                </div>
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -55,10 +57,56 @@
                                                                 <h5 class="card-subtitle text-secondary mb-1">2022</h5>
                                                                 <h2 class="card-title mb-3">Selected Preprocessing</h2>
                                                                 <p class="card-text m-0">
-                                                                    <i class="bi bi-check-circle-fill text-success"></i>
-                                                                    {{preprocessing.normalization}} [{{preprocessing.encoding}}]
-                                                                    {{preprocessing.created_at}}
-                                                                    
+
+                                                                    <!-- Some borders are removed -->
+                                                                <ul class="list-group list-group-flush">
+                                                                    <li class="list-group-item">
+
+                                                                        {% if preprocesses.imputation %}
+                                                                        <i
+                                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                                        {% else %}
+                                                                        <i class="bi bi-x-circle-fill text-danger"></i>
+                                                                        {% endif %}
+                                                                        Imputation
+                                                                    </li>
+                                                                    <li class="list-group-item">
+                                                                        {% if preprocesses.encoding %}
+                                                                        <i
+                                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                                        {% else %}
+                                                                        <i class="bi bi-x-circle-fill text-danger"></i>
+                                                                        {% endif %}
+                                                                        Encoding
+                                                                    </li>
+                                                                    <li class="list-group-item">
+                                                                        {% if preprocesses.normalization %}
+                                                                        <i
+                                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                                        {% else %}
+                                                                        <i class="bi bi-x-circle-fill text-danger"></i>
+                                                                        {% endif %}
+                                                                        Normalization
+                                                                    </li>
+                                                                    <li class="list-group-item">
+                                                                        {% if preprocesses.feature_selection %}
+                                                                        <i
+                                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                                        {% else %}
+                                                                        <i class="bi bi-x-circle-fill text-danger"></i>
+                                                                        {% endif %}
+                                                                        Feature Selection
+                                                                    </li>
+                                                                    <li class="list-group-item">
+                                                                        {% if preprocesses.pca %}
+                                                                        <i
+                                                                            class="bi bi-check-circle-fill text-success"></i>
+                                                                        {% else %}
+                                                                        <i class="bi bi-x-circle-fill text-danger"></i>
+                                                                        {% endif %}
+                                                                        PCA
+                                                                    </li>
+                                                                </ul>
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -96,7 +144,8 @@
                                                                     Sleek, intuitive, and powerful
                                                                     front-end framework for faster and easier web
                                                                     development. Bootstrap 2 is no longer officially
-                                                                    supported.</p>
+                                                                    supported.
+                                                                </p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -114,7 +163,8 @@
                                                                     Sleek, intuitive, and powerful
                                                                     front-end framework for faster and easier web
                                                                     development. Bootstrap 2 is no longer officially
-                                                                    supported.</p>
+                                                                    supported.
+                                                                </p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -124,7 +174,21 @@
 
                                     </div>
                                     <form hx-post="{% url 'execute' %}" htmx-swap="outerHTML" htmx-indicator=".loader">
+                                        {% csrf_token %}
                                         <div class="d-grid py-5">
+                                            <!-- target column -->
+                                            <div class="mb-3">
+                                                <label for="target" class="form-label">Target for Training (Y)</label>
+                                                <select class="form-select form-select-lg" name="target" id="target" required>
+                                                    <option selected disabled>Select one</option>
+                                                    
+                                                    {% for name in columns %}
+                                                        <option value="{{name}}">{{name}}</option>
+                                                    {% endfor %}
+                                                        
+                                                </select>
+                                            </div>
+
                                             <button class="btn btn-primary">
                                                 Train
                                                 Model
@@ -134,8 +198,6 @@
                                                     Loading...
                                                 </div>
                                             </button>
-
-
                                         </div>
                                     </form>
                                 </div>
