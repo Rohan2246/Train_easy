@@ -33,6 +33,7 @@ from datetime import datetime
 import time
 from django.http import HttpResponse
 from joblib import dump, load
+import os
 
 @login_required
 def upload_dataset(request):
@@ -321,26 +322,30 @@ def execute_pipeline(request):
                     'mae': mean_absolute_error(y_test, y_pred)
                 }
         # visualize the results
+        graph = None
         if task == 'classification':
             fig, ax = plt.subplots()
             ax.bar(results.keys(), [r['accuracy'] for r in results.values()])
             ax.set_title('Accuracy of classification models')
             ax.set_xlabel('Models')
             ax.set_ylabel('Accuracy')
-            plt.savefig('accuracy.png')
+            plt.savefig('assets/output/accuracy.png')
             # save to plot
-            viz = Visualizations(dataset=dataset, user=user, model=training, metric=metrics, algo=algorithms, plot='accuracy.png')
+            os.makedirs('assets/output', exist_ok=True)
+            viz = Visualizations(dataset=dataset, user=user, model=training, metric=metrics, algo=algorithms, plot='assets/output/accuracy.png')
             viz.save()
+            graph = 'assets/output/accuracy.png'
         if task == 'regression':
             fig, ax = plt.subplots()
             ax.bar(results.keys(), [r['mse'] for r in results.values()])
             ax.set_title('MSE of regression models')
             ax.set_xlabel('Models')
             ax.set_ylabel('MSE')
-            plt.savefig('mse.png')
+            plt.savefig('assets/output/mse.png')
             # save to plot
-            viz = Visualizations(dataset=dataset, user=user, model=training, metric=metrics, algo=algorithms, plot='mse.png')
+            viz = Visualizations(dataset=dataset, user=user, model=training, metric=metrics, algo=algorithms, plot='assets/output/mse.png')
             viz.save()
+            graph = 'assets/output/mse.png'
         # store the best model
         best_model = None
         for model_name, result in results.items():
@@ -361,7 +366,9 @@ def execute_pipeline(request):
         training.training_accuracy = results[best_model]['accuracy']
         training.testing_accuracy = results[best_model]['accuracy']
         training.save()
-        return HttpResponse('Pipeline executed successfully')
+        graph = graph.replace('assets/', 'static/')
+        print(graph)
+        return HttpResponse('<div class="text-center">Pipeline executed successfully <br> <img src="/'+graph+'"></div>')
         
     else:
         return JsonResponse({'error': 'Invalid request method'})

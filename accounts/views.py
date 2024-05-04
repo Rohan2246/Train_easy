@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import ProfileForm , DashboardForm
 from django.contrib.auth.decorators import login_required
+import os
 # Create your views here.
 
 def customer_login(request):

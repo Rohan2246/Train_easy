@@ -122,7 +122,10 @@
                 <div class="progress-bar"></div>
             </div>
             <a href="#" class="bs-wizard-dot"></a>
-            <div class="bs-wizard-info text-center">Preprocessing</div>
+            <div class="bs-wizard-info text-center">
+                <a href="{% url 'preprocess_selection' %}">Preprocessing</a>
+
+                </div>
         </div>
 
         <div class="col-sm-1 bs-wizard-step complete"><!-- complete -->
@@ -131,7 +134,9 @@
                 <div class="progress-bar"></div>
             </div>
             <a href="#" class="bs-wizard-dot"></a>
-            <div class="bs-wizard-info text-center">Algorithm</div>
+            <div class="bs-wizard-info text-center">
+                <a href="{% url 'algorithm_selection' %}">Algorithm</a>
+            </div>
         </div>
         <div class="col-sm-1 bs-wizard-step complete"><!-- active -->
             <div class="text-center bs-wizard-stepnum">Step 4</div>
@@ -139,7 +144,9 @@
                 <div class="progress-bar"></div>
             </div>
             <a href="#" class="bs-wizard-dot"></a>
-            <div class="bs-wizard-info text-center">Metrics</div>
+            <div class="bs-wizard-info text-center">
+                <a href="{% url 'metric_selection' %}">Metrics</a>
+            </div>
         </div>
 
         <div class="col-sm-1 bs-wizard-step complete"><!-- active -->
@@ -148,7 +155,9 @@
                 <div class="progress-bar"></div>
             </div>
             <a href="#" class="bs-wizard-dot"></a>
-            <div class="bs-wizard-info text-center">Training</div>
+            <div class="bs-wizard-info text-center">
+                <a href="{% url 'training' %}">Training</a>
+            </div>
         </div>
 
         
@@ -159,7 +168,9 @@
                 <div class="progress-bar"></div>
             </div>
             <a href="#" class="bs-wizard-dot"></a>
-            <div class="bs-wizard-info text-center">Finalize</div>
+            <div class="bs-wizard-info text-center">
+                <a href="{% url 'finalize' %}">Finalize</a>
+            </div>
         </div>
         
 
