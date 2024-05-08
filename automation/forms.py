@@ -1,5 +1,5 @@
 from django import forms
-from .models import Dataset, Preprocessing, AlgorithmSelection, MetricSelection, Training
+from .models import Dataset, Preprocessing, AlgorithmSelection, MetricSelection, Training, My_Models
 
 class DatasetUploadForm(forms.ModelForm):
     class Meta:
@@ -29,3 +29,7 @@ class TrainingForm(forms.ModelForm):
         model = Training
         fields = ['dataset' ,'split' ]  
         
+class My_ModelsForm(forms.ModelForm):
+    class Meta:
+        model = My_Models
+        fields = ['dataset', 'model_name', 'model_type', 'model_accuracy', 'model_mse', 'model_rmse', 'model_mae', 'model_confusion_matrix', 'model_roc_auc', 'model_precision', 'model_recall', 'model_f1']

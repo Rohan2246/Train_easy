@@ -83,6 +83,25 @@ class Visualizations(models.Model):
     
     def __str__(self):
         return f'{self.dataset.name} - {self.created_at}'
+    
+class My_Models(models.Model):
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    model_name = models.CharField(max_length=255, help_text="Name of the model")
+    model_type = models.CharField(max_length=255, help_text="Type of the model")
+    model_accuracy = models.FloatField(default=0.0)
+    model_mse = models.FloatField(default=0.0)
+    model_rmse = models.FloatField(default=0.0)
+    model_mae = models.FloatField(default=0.0)
+    model_confusion_matrix = models.TextField(help_text="Confusion Matrix")
+    model_roc_auc = models.FloatField(default=0.0)
+    model_precision = models.FloatField(default=0.0)
+    model_recall = models.FloatField(default=0.0)
+    model_f1 = models.FloatField(default=0.0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f'{self.dataset.name} - {self.model_name}'
 
     
 

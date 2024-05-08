@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import DatasetUploadForm, PreprocessingForm, AlgorithmSelectionForm, MetricSelectionForm, TrainingForm
+from .forms import DatasetUploadForm, PreprocessingForm, AlgorithmSelectionForm, MetricSelectionForm, TrainingForm , My_ModelsForm
 from .models import *
 from django.http import JsonResponse
 from .preprocessing import preprocess_data
@@ -361,7 +361,7 @@ def execute_pipeline(request):
         # save the best model
         os.makedirs('models', exist_ok=True)
         dump(pipelines[best_model], f'models/{best_model}.joblib')
-        training.model_path = best_model
+        training.model_path = f'models/{best_model}.joblib'
         training.training_time = time.time() - start_time
         training.training_accuracy = results[best_model]['accuracy']
         training.testing_accuracy = results[best_model]['accuracy']
@@ -372,3 +372,35 @@ def execute_pipeline(request):
         
     else:
         return JsonResponse({'error': 'Invalid request method'})
+    
+    
+@login_required
+def my_models(request):
+    # get all my models trained
+    print(f'username: {request.user}')
+    
+    models = Training.objects.filter(user=request.user).all()
+    for model in models:
+        plot =  Visualizations.objects.filter(model=model).first()  
+        if plot:
+            model.plot = plot.plot.url.replace('/media/assets', '/static')
+            print(model.plot)
+        else:
+            model.plot = None
+            
+    ctx = {'models': models}
+    return render(request, 'my_models.html', ctx)
+    
+
+@login_required
+def delete_model(request, pk):
+    model = Training.objects.get(id=pk)
+    model.delete()
+    return redirect('my_models')
+
+@login_required
+def download_model(request, pk):
+    model = Training.objects.get(id=pk)
+    response = HttpResponse(model.model_path, content_type='application/force-download')
+    response['Content-Disposition'] = f'attachment; filename={model.model_path}'
+    return response

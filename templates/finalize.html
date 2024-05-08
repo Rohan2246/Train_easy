@@ -287,7 +287,8 @@
                                                                     <!-- Some borders are removed -->
                                                                 <ul class="list-group list-group-flush">
                                                                     <li class="list-group-item">
-                                                                        Split Size <b>{% widthratio training.split 1 100 %} % Test Data</b>
+                                                                        Split Size <b>{% widthratio training.split 1 100
+                                                                            %} % Test Data</b>
                                                                     </li>
                                                                     </p>
                                                             </div>
@@ -296,29 +297,31 @@
                                                 </div>
                                             </li>
                                             <li>
-                                                <form hx-post="{% url 'execute' %}" htmx-swap="outerHTML" htmx-indicator=".loader" class="ms-2">
+                                                <form hx-post="{% url 'execute' %}" htmx-swap="outerHTML"
+                                                    htmx-indicator=".loader" class="ms-2">
                                                     {% csrf_token %}
                                                     <div class="d-grid py-5">
                                                         <!-- target column -->
                                                         <div class="mb-3">
-                                                            <label for="target" class="form-label">Target for Training (Y)</label>
-                                                            <select class="form-select form-select-lg" name="target" id="target"
-                                                                required>
+                                                            <label for="target" class="form-label">Target for Training
+                                                                (Y)</label>
+                                                            <select class="form-select form-select-lg" name="target"
+                                                                id="target" required>
                                                                 <option selected disabled>Select one</option>
-            
+
                                                                 {% for name in columns %}
                                                                 <option value="{{name}}">{{name}}</option>
                                                                 {% endfor %}
-            
+
                                                             </select>
                                                         </div>
-            
+
                                                         <button class="btn btn-primary">
                                                             Train
                                                             Model
                                                             <div class="d-none loader">
-                                                                <span class="spinner-border spinner-border-sm" role="status"
-                                                                    aria-hidden="true"></span>
+                                                                <span class="spinner-border spinner-border-sm"
+                                                                    role="status" aria-hidden="true"></span>
                                                                 Loading...
                                                             </div>
                                                         </button>
@@ -328,7 +331,7 @@
                                         </ul>
 
                                     </div>
-                                   
+
                                 </div>
                             </div>
                         </section>

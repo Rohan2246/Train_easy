@@ -10,6 +10,11 @@ urlpatterns = [
     path('training', views.training, name='training'),
     path('finalize', views.finalize_pipeline, name='finalize'),
     path('execute', views.execute_pipeline, name='execute'),
+    path('my_models', views.my_models, name='my_models'),
+    # delete training model
+    path('delete/model/<int:pk>', views.delete_model, name='delete_model'),
+    # download model
+    path('download/model/<int:pk>', views.download_model, name='download_model'),
 ]
 
 api_urlpatterns = [
