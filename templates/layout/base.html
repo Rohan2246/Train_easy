@@ -37,6 +37,13 @@
 <body>
 
     {% include 'components/menu.html' %}
+    <!-- Messages -->
+    <div class="container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}c
     <main id="main">
         {% block content %}{% endblock %}
     </main><!-- End #main -->

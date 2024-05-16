@@ -174,24 +174,30 @@ def finalize_pipeline(request):
     mid = request.session.get('current_metric_id')
     tid = request.session.get('current_training_id')
     print(did, pid, aid, mid, tid)
-    dataset = Dataset.objects.get(id=did)
-    df = pd.read_csv(dataset.file, nrows=5)
-    columns  = df.columns.tolist()
-    preprocesses = Preprocessing.objects.get(id=pid)
-    algorithms = AlgorithmSelection.objects.get(id=aid)
-    metrics = MetricSelection.objects.get(id=mid)
-    training = Training.objects.get(id=tid)
-    user = request.user
-    ctx = {
-        'dataset': dataset,
-        'preprocesses': preprocesses,
-        'algorithms': algorithms,
-        'metrics': metrics,
-        'training': training,
-        'columns': columns,
-        'table': df.to_html(classes='table table-striped table-bordered table-sm')
-    }
-    return render(request, 'finalize.html', ctx)
+    
+    try:
+        dataset = Dataset.objects.get(id=did)
+        df = pd.read_csv(dataset.file, nrows=5, encoding='latin-1')
+        columns  = df.columns.tolist()
+        preprocesses = Preprocessing.objects.get(id=pid)
+        algorithms = AlgorithmSelection.objects.get(id=aid)
+        metrics = MetricSelection.objects.get(id=mid)
+        training = Training.objects.get(id=tid)
+        user = request.user
+        ctx = {
+            'dataset': dataset,
+            'preprocesses': preprocesses,
+            'algorithms': algorithms,
+            'metrics': metrics,
+            'training': training,
+            'columns': columns,
+            'table': df.to_html(classes='table table-striped table-bordered table-sm')
+        }
+        return render(request, 'finalize.html', ctx)
+    except Exception as e:
+        print(e)
+        messages.error(request, 'Error in finalizing the pipeline, data is corrupted or in wrong format')
+        return redirect('upload_dataset')
 
 @csrf_exempt
 def execute_pipeline(request):
@@ -224,8 +230,15 @@ def execute_pipeline(request):
             task = 'classification'
         else:
             task = 'regression'
-        
+        # y traget column name
+        print(f'target: {target}')
+        print(f'num of values in target: {df[target].value_counts().count()}')
         X = df.drop(target, axis=1)
+        # drop categorical column if num cat greater than 10
+        for col in X.columns:
+            if X[col].dtype == 'object':
+                if X[col].value_counts().count() > 10:
+                    X.drop(col, axis=1, inplace=True)
         y = df[target]
         # preprocess the data
         num_cols = X.select_dtypes(include=np.number).columns
@@ -252,6 +265,7 @@ def execute_pipeline(request):
         cat_pipeline = Pipeline(cat_steps)
         pipelines = {}
         if task == 'classification':
+            print('classification')
             if algorithms.linear:
                 pipeline = Pipeline(steps=[('preprocessor', ColumnTransformer(transformers=[('num', num_pipeline, num_cols), ('cat', cat_pipeline, cat_cols)])),
                                             ('model', LogisticRegression())])
@@ -278,6 +292,7 @@ def execute_pipeline(request):
                 pipelines['knn'] = pipeline
 
         else:
+            print('regression')
             if algorithms.linear:
                 pipeline = Pipeline(steps=[('preprocessor', ColumnTransformer(transformers=[('num', num_pipeline, num_cols), ('cat', cat_pipeline, cat_cols)])),
                                             ('model', LinearRegression())])
@@ -300,7 +315,10 @@ def execute_pipeline(request):
                 pipelines['knn'] = pipeline
             
         # split the data
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=training.split, random_state=training.random_state)
+        try:
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=training.split, random_state=training.random_state)
+        except Exception as e:
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.01, random_state=42)
         # train the model
         results = {}
         for model_name, model in pipelines.items():
@@ -363,8 +381,13 @@ def execute_pipeline(request):
         dump(pipelines[best_model], f'models/{best_model}.joblib')
         training.model_path = f'models/{best_model}.joblib'
         training.training_time = time.time() - start_time
-        training.training_accuracy = results[best_model]['accuracy']
-        training.testing_accuracy = results[best_model]['accuracy']
+        print(results)
+        if task == 'classification':
+            training.training_accuracy = results[best_model]['accuracy']
+            training.testing_accuracy = results[best_model]['accuracy']
+        else:
+            training.training_accuracy = results[best_model]['mse']
+            training.testing_accuracy = results[best_model]['mse']
         training.save()
         graph = graph.replace('assets/', 'static/')
         print(graph)
